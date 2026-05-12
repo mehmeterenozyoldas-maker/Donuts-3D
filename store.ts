@@ -12,6 +12,7 @@ interface AppState {
   error: string | null;
   isInteracting: boolean;
   analysisResults: { area: number; vertices: number; faces: number } | null;
+  exportFn: (() => void) | null;
 
   // Actions
   setGrid: (grid: Partial<GridSettings>) => void;
@@ -25,6 +26,8 @@ interface AppState {
   loadPreset: (preset: Preset) => void;
   setIsInteracting: (isInteracting: boolean) => void;
   setAnalysisResults: (results: { area: number; vertices: number; faces: number }) => void;
+  exportSTL: () => void;
+  setExportSTL: (fn: () => void) => void;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -62,6 +65,7 @@ export const useStore = create<AppState>((set, get) => ({
   error: null,
   isInteracting: false,
   analysisResults: null,
+  exportFn: null,
 
   setGrid: (changes) => set((state) => ({ grid: { ...state.grid, ...changes } })),
   setDisplay: (changes) => set((state) => ({ display: { ...state.display, ...changes } })),
@@ -112,4 +116,9 @@ export const useStore = create<AppState>((set, get) => ({
 
   setIsInteracting: (isInteracting) => set({ isInteracting }),
   setAnalysisResults: (analysisResults) => set({ analysisResults }),
+  exportSTL: () => {
+    const { exportFn } = get();
+    if (exportFn) exportFn();
+  },
+  setExportSTL: (fn) => set({ exportFn: fn }),
 }));

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { STLExporter } from 'three/examples/jsm/exporters/STLExporter';
 import { useStore } from '../store';
 
 const ParametricObject: React.FC = () => {
@@ -46,6 +47,24 @@ const ParametricObject: React.FC = () => {
   // Initial Compile
   useEffect(() => {
     useStore.getState().compileSurface();
+    
+    // Set up STL exporter
+    const exporter = new STLExporter();
+    useStore.getState().setExportSTL(() => {
+        if (meshRef.current) {
+            const result = exporter.parse(meshRef.current);
+            const blob = new Blob([result], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.href = URL.createObjectURL(blob);
+            link.download = 'parametric_object.stl';
+            link.click();
+            document.body.removeChild(link);
+        }
+    });
+
+    return () => useStore.getState().setExportSTL(null as any);
   }, []);
 
   useFrame((state) => {

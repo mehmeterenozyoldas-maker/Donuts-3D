@@ -220,6 +220,12 @@ const Sidebar: React.FC = () => {
                         </div>
                     </div>
                 )}
+                <button 
+                  onClick={() => store.exportSTL()}
+                  className="w-full mt-2 py-2 bg-black text-white hover:bg-gray-800 rounded-lg flex items-center justify-center gap-2 font-bold text-sm"
+                >
+                  <FolderOpen size={16} /> DOWNLOAD STL
+                </button>
             </div>
         </PopPanel>
 
